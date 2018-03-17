@@ -1,0 +1,5 @@
+to generate the assembly .s file use gcc.
+
+usage: gcc -S filename.c
+
+:)
