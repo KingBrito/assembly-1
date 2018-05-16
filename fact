@@ -1,0 +1,93 @@
+%include "io.inc"
+section .bss
+    result  RESD 256
+    mutiply RESD 256
+section .data
+    size    EQU 0x40
+    incr    EQU 0x04
+section .text
+global CMAIN
+CMAIN:
+    mov ebp, esp            ; for correct debugging
+    GET_UDEC 4,[result]     ; get the value of fact in the input
+    mov eax,[result]        ; copy the value to eax
+    mov ecx,eax             ; copy the value of eax to ecx
+    mov edx,eax             ; and the edx
+
+    call FATORIAL           ; FATORIAL function
+
+    .done:
+    call PRINT              ; PRINT function
+    xor eax, eax
+    ret
+
+FATORIAL:
+
+    .fat:
+    mov ecx,[mutiply]       ; set the value to sum every loop
+    dec edx                 ; edx control's the loop
+    cmp edx,1               ; compares value of edx with 1, if less or equal than 1, fat is finish
+    jle .fatdone            ; if is finish, go to the end
+
+    mov ebx,edx             ;
+    push edx                ; save value of edx in the stack
+    ;xor edx,edx             ; turn edx = 0
+
+    call SETMULT            ; SETMULT function
+
+    .mult:
+    cmp ebx,1               ; compares value of edx with 1, if equal than 1, mult is finish
+    je .donemult            ; if is finish, go to the end
+
+    call ADDC               ; ADDC function
+
+    ;xor edx,edx             ; turn edx=0 to
+    dec ebx
+    jmp .mult
+    .donemult:
+
+    pop edx
+    cmp edx,1
+    jg .fat
+    .fatdone:
+    ret
+
+SETMULT:
+
+    xor edx,edx
+    .setmult:
+    mov eax,[result+edx]
+    mov [mutiply+edx],eax
+    add edx,0x04
+    cmp edx,size
+    jl .setmult
+    ret
+
+
+ADDC:
+    xor edx,edx
+    .add:
+    mov eax,[result+edx]
+    mov ecx,[mutiply+edx]
+    add eax,ecx
+    jc .addcarry
+    .continuecarry:
+    mov [result+edx],eax
+    add edx,incr
+    cmp edx,size
+    jl .add
+    ret
+
+    .addcarry:
+    adc DWORD[result+edx+incr],0x0
+    jmp .continuecarry
+
+PRINT:
+
+    mov edx,size
+    .add:
+    PRINT_HEX 4,[result+edx]
+    sub edx,incr
+    cmp edx,0x00
+    jge .add
+    ret
