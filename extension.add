@@ -1,0 +1,36 @@
+%include "io.inc"
+section .data
+    text db "namoral.txt",0
+    extc db ".crpt",0
+section .bss
+    new resd 100
+section .text
+global CMAIN
+CMAIN:
+    mov ebp, esp; for correct debugging
+    xor esi,esi
+    xor eax,eax 
+    cp:
+    mov cl,[text+esi]
+    cmp cl,0
+    jle ext
+    mov [new+esi],cl
+    inc esi
+    jmp cp
+    
+    ext:
+    mov cl,[extc+eax]
+    mov [new+esi],cl
+    inc eax
+    inc esi
+    cmp cl,0
+    je done
+    jmp ext
+    
+    
+    done:
+    PRINT_STRING [text]
+    NEWLINE
+    PRINT_STRING [new]
+    xor eax, eax
+    ret

@@ -1,0 +1,72 @@
+Para fazer a prova de calculo 2 do joel eh necessário usar um papel retangular para rascunho. Com uma folha A4 você consegue fazer X questões.
+
+Joel quer que cada um dos K alunos da cadeira façam as N questões. Para isso ele precisa pegar os pacotes de papéis na secretaria, cada um contendo P folhas de papel, e então distribuir entre os alunos ao som de musica_triste_do_naruto.mp3 . Sabendo que cada pessoa deve ter papel suficiente para fazer as N questões. Quantos Pacotes o Joel precisa pegar na secretaria?
+
+OBS: Desconsidere os papéis que ficaram manchados pelas lagrimas.
+
+Entrada: 
+A entrada é composta por uma linha com 4 inteiros K,N,X,P - Sendo eles respectivamente o número de alunos que fazem a cadeira, o número de questões da prova, o número de questoes que dá pra fazer na folha A4 e o número de folhas que cada pacote de papel contém.
+Saída:
+Quantidade referente aos pacotes que o Joel deve pegar.
+
+Exemplos:
+	entrada -> 1 2 1 2
+	saida -> 1
+	entrada -> 11 1 1 1
+	saida -> 11
+	entrada -> 9 20 5 7
+	saida -> 6	
+
+//Resolucao 
+
+%include "io.inc"
+section .text
+global CMAIN
+CMAIN:
+    mov ebp, esp; for correct debugging
+    xor eax,eax ; Zerando o K
+    xor ebx,ebx ; Zerando o N
+    xor ecx,ecx ; Zerando o X
+    xor edi,edi ; Zerando o P
+    ; Recebendo os valores em ordem
+    GET_UDEC 4, EAX
+    GET_UDEC 4, EBX
+    GET_UDEC 4, ECX
+    GET_UDEC 4, EDI
+    ;Para resolver este problema precisamos efetuar a divisao de x
+    ; por N e pegar o teto deste valor podemos fazer isso atráves
+    ; de um loop
+    MOV ESI, 0 ; Representado o resultado dessa divisao
+    ;EBX = Quantidade de questoes da prova
+    ;ECX = Quantidade de questoes que uma folha A4 suporta
+    Faca:
+        inc ESI ; Represento que aquela divisao foi feita
+        sub EBX,ECX ; Removo o valor de X em N
+        cmp EBX, 0
+        jg Faca
+    ; O valor encontrado será quantas folhas cada um vai precisar
+    ; para fazer a prova, então agora precisamos saber quantas
+    ; folhas vamos ter no total
+    mul esi; usando essa diretiva multiplicamos o valor de k que 
+    ; representa a quantidade de pessoas pelo valor de folhas que
+    ; cada um precisa e este valor está sendo armazenado em EAX
+ 
+    ; Então chegando aqui nós já sabemos a quantidade de folhas
+    ; necessarias, só falta descobrir quantos pacotes precisa
+    
+    ; Podemos descobrir isso facilmente fazendo o teto da divisao
+    ; do valor total de folhas pela quantidade de folhas que cada
+    ; pacote tem
+    mov ESI, 0 ; Representando agora a quantidade de pacotes
+    ;EAX = Quantidade de papeis necessarias
+    ;EDI = Quantidade de papeis por pacote 
+    Teto :
+        inc ESI
+        sub EAX, EDI
+        CMP EAX, 0
+        jg Teto
+        
+    PRINT_UDEC 4, ESI ; Printo a quantidade de pacotes necessária
+    
+    xor eax,eax
+    ret
